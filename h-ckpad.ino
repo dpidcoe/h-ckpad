@@ -13,11 +13,73 @@ IntervalTimer tick;
 uint16_t buttonStates[MAX_BUTTONS];
 uint32_t button_cycles [MAX_BUTTONS];
 
-#define AIRSTRIKE "AIRSTRIKE!"
-#define CLUSTER "CLUSTER!"
-#define ROCKETS "ROCKETS!"
-#define NAPALM "NAPALM!"
-#define BOMB "BOMB!"
+/*
+#define KEY_UP_ARROW 0xDA
+#define KEY_DOWN_ARROW 0xD9
+#define KEY_LEFT_ARROW 0xD8
+#define KEY_RIGHT_ARROW 0xD7
+*/
+
+#define REINFORCE "wsdaw"
+#define SOS "wsdw"
+#define RESUPPLY "sswd"
+#define HELLBOMB "swaswdsw"
+#define EAGLE_REARM "wwawd"
+#define SEAF_ARTILLERY "dwws"
+
+#define JUMP_PACK "swwsw"
+#define SUPPLY_PACK "saswws"
+#define LAS_GUARD_DOG "swawdd"
+#define BALLISTIC_SHIELD "sasswa"
+#define SHIELD_PACK "swadad"
+#define AR23_GUARD_DOG "swawds"
+
+#define MG43 "saswd"
+#define AMR "sadws"
+#define STALWART "saswwa"
+#define EAT17 "ssawd"
+#define RECOILLESS_RIFLE "sadda"
+#define FLAMETHROWER "sawsw"
+#define AUTOCANNON "saswwd"
+#define HMG "sawss"
+#define RAILGUN "sdswad"
+#define LASER_CANNON "saswa"
+#define ARC_THROWER "sdswaa"
+#define QUASAR_CANNON "sswad"
+
+#define EXOSUIT "asdwass"
+
+#define HMG_EMPLACEMENT "swadda"
+#define SHIELD_RELAY "ssadad"
+#define TESLA_TOWER "swdwad"
+#define AP_MINEFIELD "sawd"
+#define INCENDIARY_MINEFIELD "saas"
+#define MG_SENTRY "swddw"
+#define GATLING_SENTRY "swda"
+#define MORTAR_SENTRY "swdds"
+#define AUTOCANNON_SENTRY "swdwaw"
+#define ROCKET_SENTRY "swdda"
+#define EMS_MORTAR_SENTRY "swdsd"
+
+#define ORBITAL_GATLING_BARRAGE "dsaww"
+#define ORBITAL_AIRBURST "ddd"
+#define ORBITAL_120MM "ddsads"
+#define ORBITAL_380MM "dswwass"
+#define ORBITAL_WALKING_BARRAGE "dsdsds"
+#define ORBITAL_LASER "dswds"
+#define ORBITAL_RAILCANNON "dwssd"
+#define ORBITAL_PRECISION_STRIKE "ddw"
+#define ORBITAL_GAS "ddsd"
+#define ORBITAL_EMS "ddas"
+#define ORBITAL_SMOKE "ddsw"
+
+#define STRAFING_RUN "wdd"
+#define AIRSTRIKE "wdsd"
+#define CLUSTER_BOMB "wdssd"
+#define ROCKET_STRIKE "wdwa"
+#define NAPALM_STRIKE "wdsw"
+#define BOMB "wdsss"
+#define SMOKE_STRIKE "wdws"
 
 typedef struct {
   String keypattern;
@@ -33,10 +95,14 @@ void setup()
 {
 
    button_set[0].keypattern = AIRSTRIKE;
-   button_set[1].keypattern = NAPALM;
-   button_set[2].keypattern = ROCKETS;
+   button_set[1].keypattern = NAPALM_STRIKE;
+   button_set[2].keypattern = ROCKET_STRIKE;
    button_set[3].keypattern = BOMB;
-   button_set[4].keypattern = CLUSTER;
+   button_set[4].keypattern = CLUSTER_BOMB;
+   
+   button_set[13].keypattern = SOS;
+   button_set[14].keypattern = RESUPPLY;
+   button_set[15].keypattern = REINFORCE;
 
    button_set[0].buttonPin = 0;
    button_set[1].buttonPin = 1;
@@ -56,6 +122,7 @@ void setup()
    button_set[15].buttonPin = 16;
 
   tick.begin(tick_callback, TICKRATE); //read every 1 millisecond
+  Keyboard.begin ();
   
   for(int i = 0; i < MAX_BUTTONS; i++)
   {
@@ -71,12 +138,13 @@ void loop ()
     
     if(b->is_down)
     {
-      Serial.println("button!");
+      Keyboard.press(KEY_LEFT_CTRL);
       for(uint8_t i = 0; i < b->keypattern.length(); i++)
       {
         Keyboard.write(b->keypattern[i]);
         delay(20);
       }
+      Keyboard.releaseAll();
       b->is_down = false;
     } 
   }
