@@ -4,6 +4,8 @@ IntervalTimer tick;
 
 #define TICKRATE 1000 //in microseconds
 
+#define DELAY 50
+
 #define DEBOUNCE_MILLISECONDS 50
 #define DEBOUNCE_CYCLES (TICKRATE / 1000) * DEBOUNCE_MILLISECONDS //how many ticks
 
@@ -139,11 +141,15 @@ void loop ()
     if(b->is_down)
     {
       Keyboard.press(KEY_LEFT_CTRL);
+      delay(DELAY*10);
       for(uint8_t i = 0; i < b->keypattern.length(); i++)
       {
-        Keyboard.write(b->keypattern[i]);
-        delay(20);
+        Keyboard.press(b->keypattern[i]);
+        delay(DELAY);
+        Keyboard.release(b->keypattern[i]);
+        delay(DELAY);
       }
+      delay(DELAY);
       Keyboard.releaseAll();
       b->is_down = false;
     } 
