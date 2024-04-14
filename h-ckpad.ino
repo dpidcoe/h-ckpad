@@ -1,4 +1,5 @@
-IntervalTimer tick;
+
+#include "config.h"
 
 #define MAX_BUTTONS 16
 
@@ -10,8 +11,9 @@ IntervalTimer tick;
 #define DEBOUNCE_CYCLES (TICKRATE / 1000) * DEBOUNCE_MILLISECONDS //how many ticks
 
 #define COOLDOWN_MILLISECONDS 500
-#define COOLDOWN_CYCLES = (TICKRATE / 1000) * COOLDOWN_MILLISECONDS
+#define COOLDOWN_CYCLES (TICKRATE / 1000) * COOLDOWN_MILLISECONDS
 
+IntervalTimer tick;
 uint16_t buttonStates[MAX_BUTTONS];
 uint32_t button_cycles [MAX_BUTTONS];
 
@@ -22,67 +24,6 @@ uint32_t button_cycles [MAX_BUTTONS];
 #define KEY_RIGHT_ARROW 0xD7
 */
 
-#define REINFORCE "wsdaw"
-#define SOS "wsdw"
-#define RESUPPLY "sswd"
-#define HELLBOMB "swaswdsw"
-#define EAGLE_REARM "wwawd"
-#define SEAF_ARTILLERY "dwws"
-
-#define JUMP_PACK "swwsw"
-#define SUPPLY_PACK "saswws"
-#define LAS_GUARD_DOG "swawdd"
-#define BALLISTIC_SHIELD "sasswa"
-#define SHIELD_PACK "swadad"
-#define AR23_GUARD_DOG "swawds"
-
-#define MG43 "saswd"
-#define AMR "sadws"
-#define STALWART "saswwa"
-#define EAT17 "ssawd"
-#define RECOILLESS_RIFLE "sadda"
-#define FLAMETHROWER "sawsw"
-#define AUTOCANNON "saswwd"
-#define HMG "sawss"
-#define RAILGUN "sdswad"
-#define LASER_CANNON "saswa"
-#define ARC_THROWER "sdswaa"
-#define QUASAR_CANNON "sswad"
-
-#define EXOSUIT "asdwass"
-
-#define HMG_EMPLACEMENT "swadda"
-#define SHIELD_RELAY "ssadad"
-#define TESLA_TOWER "swdwad"
-#define AP_MINEFIELD "sawd"
-#define INCENDIARY_MINEFIELD "saas"
-#define MG_SENTRY "swddw"
-#define GATLING_SENTRY "swda"
-#define MORTAR_SENTRY "swdds"
-#define AUTOCANNON_SENTRY "swdwaw"
-#define ROCKET_SENTRY "swdda"
-#define EMS_MORTAR_SENTRY "swdsd"
-
-#define ORBITAL_GATLING_BARRAGE "dsaww"
-#define ORBITAL_AIRBURST "ddd"
-#define ORBITAL_120MM "ddsads"
-#define ORBITAL_380MM "dswwass"
-#define ORBITAL_WALKING_BARRAGE "dsdsds"
-#define ORBITAL_LASER "dswds"
-#define ORBITAL_RAILCANNON "dwssd"
-#define ORBITAL_PRECISION_STRIKE "ddw"
-#define ORBITAL_GAS "ddsd"
-#define ORBITAL_EMS "ddas"
-#define ORBITAL_SMOKE "ddsw"
-
-#define STRAFING_RUN "wdd"
-#define AIRSTRIKE "wdsd"
-#define CLUSTER_BOMB "wdssd"
-#define ROCKET_STRIKE "wdwa"
-#define NAPALM_STRIKE "wdsw"
-#define BOMB "wdsss"
-#define SMOKE_STRIKE "wdws"
-
 typedef struct {
   String keypattern;
   int32_t cycles = 0;
@@ -90,21 +31,17 @@ typedef struct {
   uint8_t buttonPin;
 } button;
 
+uint16_t keymap [4] = {KEY_UP_ARROW,KEY_DOWN_ARROW,KEY_LEFT_ARROW,KEY_RIGHT_ARROW};
+
 
 button button_set[MAX_BUTTONS];
 
 void setup()
 {
 
-   button_set[0].keypattern = AIRSTRIKE;
-   button_set[1].keypattern = NAPALM_STRIKE;
-   button_set[2].keypattern = ROCKET_STRIKE;
-   button_set[3].keypattern = BOMB;
-   button_set[4].keypattern = CLUSTER_BOMB;
-   
-   button_set[13].keypattern = SOS;
-   button_set[14].keypattern = RESUPPLY;
-   button_set[15].keypattern = REINFORCE;
+   Serial.begin(9600);
+
+   configureKeys();
 
    button_set[0].buttonPin = 0;
    button_set[1].buttonPin = 1;
@@ -139,7 +76,7 @@ void loop ()
     button * b = &button_set[i];
     
     if(b->is_down)
-    {
+    {      
       Keyboard.press(KEY_LEFT_CTRL);
       delay(DELAY*10);
       for(uint8_t i = 0; i < b->keypattern.length(); i++)
@@ -170,7 +107,7 @@ void tick_callback ()
       if(b->cycles++ >= DEBOUNCE_CYCLES && !b->is_down )
       {
         b->is_down = true;
-        b->cycles = -1000;
+        b->cycles = -COOLDOWN_CYCLES;
       }
     }
     else
@@ -178,4 +115,24 @@ void tick_callback ()
       b->cycles = 0;
     }  
   }
+}
+
+void configureKeys()
+{
+   button_set[0].keypattern = KEY0;
+   button_set[1].keypattern = KEY1;
+   button_set[2].keypattern = KEY2;
+   button_set[3].keypattern = KEY3;
+   button_set[4].keypattern = KEY4;
+   button_set[5].keypattern = KEY5;
+   button_set[6].keypattern = KEY6;
+   button_set[7].keypattern = KEY7;
+   button_set[8].keypattern = KEY8;
+   button_set[9].keypattern = KEY9;
+   button_set[10].keypattern = KEY10;
+   button_set[11].keypattern = KEY11;
+   button_set[12].keypattern = KEY12;
+   button_set[13].keypattern = KEY13;
+   button_set[14].keypattern = KEY14;
+   button_set[15].keypattern = KEY15;
 }
